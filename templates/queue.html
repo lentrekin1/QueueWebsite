@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chap Ping Pong Queue</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+    <script src="//code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+    <script>
+        var socket = io.connect(window.location.protocol + '//' + document.domain);
+        socket.on('connect', function () {
+            socket.emit('connection');
+        });
+        socket.on('queue update', function (message) {
+            document.getElementById('location').innerHTML = message.location;
+            document.getElementById('wait').innerHTML = 'Estimated wait time: ' + message.wait + ' minutes';
+        });
+        socket.on('front of queue', function (message) {
+            document.getElementById('info').outerHTML = message;
+        });
+        socket.on('done', function (message) {
+            document.getElementById('info').outerHTML = message;
+        });
+        setInterval(function() {
+            socket.emit('heartbeat');
+        }, 5000);
+    </script>
+</head>
+
+<body>
+<br>
+<div class="row align-items-center">
+<div class="col-md-4 mx-auto">
+<div class="card">
+<div class="card-body" style="text-align:center;">
+    <div id="info">
+    <p>{{name}},</p>
+    <p>you are number:</p>
+    <h1 class="font-weight-bold" id="location"></h1>
+    <p>in line for ping pong</p>
+        <p id="wait">Estimated wait time:  minutes</p>
+    <a href="/leave">Leave the line</a>
+        </div>
+</div>
+</div>
+    </div>
+    </div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
+</body>
+</html>
